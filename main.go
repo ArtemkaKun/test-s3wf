@@ -12,6 +12,7 @@ const IS_SERVER_ONLINE bool = true //simulating server status for PING request
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/ping", Ping).Methods("POST")
+	router.HandleFunc("/auth/{login}/{pass}", Auth).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8000", router)) //run server on 8000 port
 
 }
@@ -20,4 +21,16 @@ func main() {
 func Ping(writer http.ResponseWriter, _ *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(writer).Encode(IS_SERVER_ONLINE)
+}
+
+//AUTH request
+func Auth(writer http.ResponseWriter, req *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(req)
+	err, login := LoginProcess(params["login"], params["pass"])
+	if err.Status != "" {
+		json.NewEncoder(writer).Encode(err)
+	} else {
+		json.NewEncoder(writer).Encode(login)
+	}
 }
