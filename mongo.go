@@ -86,3 +86,18 @@ func AddNewUser(new_user User) {
 		log.Fatal(err)
 	}
 }
+
+func GetUserInfo(uuid string) (LogErr, User) {
+	users := Client.Database("test").Collection("users")
+	var result User //buffer for FindOne() function
+	var log_err LogErr
+
+	filter := bson.D{{"uuiduser", uuid}} //will find only documents with login and pass value
+	err := users.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		log_err = LogErr{Status: "error", Message: "User cannot be found"}
+		return log_err, result
+	}
+
+	return log_err, result
+}
