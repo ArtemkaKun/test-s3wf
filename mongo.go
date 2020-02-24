@@ -77,3 +77,12 @@ func LoginProcess(login string, pass string) (LogErr, LogSucc) {
 
 	return log_err, login_succ
 }
+
+func AddNewUser(new_user User) {
+	users := Client.Database("test").Collection("users")
+
+	_, err := users.InsertOne(context.TODO(), new_user)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
