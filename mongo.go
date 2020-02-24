@@ -60,11 +60,11 @@ func init() {
 
 func LoginProcess(login string, pass string) (LogErr, LogSucc) {
 	users := Client.Database("test").Collection("users")
-	var result User
 	var login_succ LogSucc
 	var log_err LogErr
+	var result User //buffer for FindOne() function
 
-	filter := bson.D{{"login", login}, {"pass", pass}}
+	filter := bson.D{{"login", login}, {"pass", pass}} //will find only documents with login and pass value
 	err := users.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		log_err = LogErr{Status: "error", Message: "User cannot be authenticated!"}
