@@ -24,3 +24,10 @@ type LogSucc struct {
 	TokenMsg string `json:"tokenmsg"`
 	Login    User
 }
+
+type LoginTestpair struct {
+	Test_login   string
+	Test_pass    string
+	Err_status   string
+	Login_status string
+}
