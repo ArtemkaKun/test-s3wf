@@ -20,9 +20,55 @@ func TestLoginProcess(t *testing.T) {
 		exp_err_status := test_pair.Err_status
 		exp_login_status := test_pair.Login_status
 		err, succ := LoginProcess(test_pair.Test_login, test_pair.Test_pass)
-		if exp_err_status != err.Status && exp_login_status != succ.Status {
+		if exp_err_status != err.Status || exp_login_status != succ.Status {
 			t.Error("Expect: ", exp_err_status, exp_login_status,
 				"Got: ", err.Status, succ.Status)
+		}
+	}
+}
+
+func TestGetUserInfo(t *testing.T) {
+	testpairs := []UserInfoTestpair{
+		{Test_uuid: "1", Test_user: User{
+			Uuiduser:     "1",
+			Avatar_image: "image.png",
+			Avatar_type:  "image",
+			Name:         "Junior",
+			Surname:      "S3WF",
+			Datastart:    "today",
+			Login:        "0000",
+			Pass:         "12345"},
+			Err_status: ""},
+		{Test_uuid: "2", Test_user: User{
+			Uuiduser:     "2",
+			Avatar_image: "image.png",
+			Avatar_type:  "",
+			Name:         "Middle",
+			Surname:      "Mid",
+			Datastart:    "",
+			Login:        "agams1987",
+			Pass:         "12345"},
+			Err_status: ""},
+		{Test_uuid: "3", Test_user: User{
+			Uuiduser:     "3",
+			Avatar_image: "image.png",
+			Avatar_type:  "image",
+			Name:         "Senior",
+			Surname:      "Pomidor",
+			Datastart:    "today",
+			Login:        "hack1337",
+			Pass:         "light_Pa$$!"},
+			Err_status: ""},
+		{Test_uuid: "4", Test_user: User{},
+			Err_status: "error"},
+	}
+
+	for _, pair := range testpairs {
+		err, user := GetUserInfo(pair.Test_uuid)
+
+		if err.Status != pair.Err_status || user != pair.Test_user {
+			t.Error("Expect: ", pair.Err_status, pair.Test_user,
+				"Got: ", err.Status, user)
 		}
 	}
 }

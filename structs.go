@@ -31,3 +31,9 @@ type LoginTestpair struct {
 	Err_status   string
 	Login_status string
 }
+
+type UserInfoTestpair struct {
+	Test_uuid  string
+	Test_user  User
+	Err_status string
+}
