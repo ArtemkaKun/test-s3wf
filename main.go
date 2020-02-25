@@ -14,6 +14,8 @@ func main() {
 	router.HandleFunc("/ping", Ping).Methods("POST")
 	router.HandleFunc("/auth/{login}/{pass}", Auth).Methods("POST")
 	router.HandleFunc("/user", AddUser).Methods("POST")
+	router.HandleFunc("/user/{uuid}", DeleteUser).Methods("DELETE")
+	router.HandleFunc("/user/{uuid}", UpdateUser).Methods("PUT")
 	router.HandleFunc("/user/{uuid}", GetUser).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", router)) //run server on 8000 port
 
@@ -54,5 +56,27 @@ func GetUser(writer http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(writer).Encode(err)
 	} else {
 		json.NewEncoder(writer).Encode(user)
+	}
+}
+
+//USER PUT request
+func UpdateUser(writer http.ResponseWriter, req *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(req)
+	var new_user User
+	json.NewDecoder(req.Body).Decode(&new_user)
+	err := UpdateUserInfo(params["uuid"], new_user)
+	if err.Status != "" {
+		json.NewEncoder(writer).Encode(err)
+	}
+}
+
+//USER DELETE request
+func DeleteUser(writer http.ResponseWriter, req *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(req)
+	err := DeleteUserInfo(params["uuid"])
+	if err.Status != "" {
+		json.NewEncoder(writer).Encode(err)
 	}
 }

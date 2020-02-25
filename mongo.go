@@ -92,12 +92,45 @@ func GetUserInfo(uuid string) (LogErr, User) {
 	var result User //buffer for FindOne() function
 	var log_err LogErr
 
-	filter := bson.D{{"uuiduser", uuid}} //will find only documents with login and pass value
+	filter := bson.D{{"uuiduser", uuid}}
 	err := users.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		log_err = LogErr{Status: "error", Message: "User cannot be found"}
 		return log_err, result
 	}
-
 	return log_err, result
+}
+
+func UpdateUserInfo(uuid string, new_data User) LogErr {
+	users := Client.Database("test").Collection("users")
+	var log_err LogErr
+
+	filter := bson.D{{"uuiduser", uuid}}
+	update := bson.M{"$set": bson.M{"avatar_image": new_data.Avatar_image,
+		"avatar_type": new_data.Avatar_type, "name": new_data.Name,
+		"surname": new_data.Surname, "datastart": new_data.Datastart, "login": new_data.Login,
+		"pass": new_data.Pass}}
+
+	_, err := users.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log_err = LogErr{Status: "error", Message: "User cannot be found"}
+		return log_err
+	}
+
+	return log_err
+}
+
+func DeleteUserInfo(uuid string) LogErr {
+	users := Client.Database("test").Collection("users")
+	var log_err LogErr
+
+	filter := bson.D{{"uuiduser", uuid}}
+
+	_, err := users.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		log_err = LogErr{Status: "error", Message: "User cannot be found"}
+		return log_err
+	}
+
+	return log_err
 }
