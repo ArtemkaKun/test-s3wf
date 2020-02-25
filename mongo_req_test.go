@@ -160,3 +160,30 @@ func TestUpdateUserInfo(t *testing.T) {
 		}
 	}
 }
+
+func TestDeleteUserInfo(t *testing.T) {
+	testpairs := []UserInfoTestpair{
+		{Test_uuid: "5", Test_user: User{},
+			Err_status: ""},
+		{Test_uuid: "6", Test_user: User{},
+			Err_status: "error"},
+	}
+
+	for _, pair := range testpairs {
+		err := DeleteUserInfo(pair.Test_uuid)
+		if err.Status != pair.Err_status {
+			t.Error("Expect: ", pair.Err_status,
+				"Got: ", err.Status)
+		}
+	}
+
+	testpairs[0].Err_status = "error"
+	for _, pair := range testpairs {
+		err, user := GetUserInfo(pair.Test_uuid)
+
+		if err.Status != pair.Err_status || user != pair.Test_user {
+			t.Error("Expect: ", pair.Err_status, pair.Test_user,
+				"Got: ", err.Status, user)
+		}
+	}
+}

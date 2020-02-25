@@ -111,16 +111,28 @@ func UpdateUserInfo(uuid string, new_data User) LogErr {
 func DeleteUserInfo(uuid string) LogErr {
 	users := Client.Database("test").Collection("users")
 	var log_err LogErr
+	exist_ID := false
 
-	filter := bson.D{{"uuiduser", uuid}}
+	IDs := FindIDs()
+	for _, one_ID := range IDs {
+		if uuid == one_ID {
+			exist_ID = true
+		}
+	}
+	if exist_ID {
+		filter := bson.D{{"uuiduser", uuid}}
 
-	_, err := users.DeleteOne(context.TODO(), filter)
-	if err != nil {
+		_, err := users.DeleteOne(context.TODO(), filter)
+		if err != nil {
+			log_err = LogErr{Status: "error", Message: "User cannot be found"}
+			return log_err
+		}
+
+		return log_err
+	} else {
 		log_err = LogErr{Status: "error", Message: "User cannot be found"}
 		return log_err
 	}
-
-	return log_err
 }
 
 func FindIDs() []string {
