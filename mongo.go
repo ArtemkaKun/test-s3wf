@@ -79,20 +79,33 @@ func GetUserInfo(uuid string) (LogErr, User) {
 func UpdateUserInfo(uuid string, new_data User) LogErr {
 	users := Client.Database("test").Collection("users")
 	var log_err LogErr
+	exist_ID := false
 
-	filter := bson.D{{"uuiduser", uuid}}
-	update := bson.M{"$set": bson.M{"avatar_image": new_data.Avatar_image,
-		"avatar_type": new_data.Avatar_type, "name": new_data.Name,
-		"surname": new_data.Surname, "datastart": new_data.Datastart, "login": new_data.Login,
-		"pass": new_data.Pass}}
+	IDs := FindIDs()
+	for _, one_ID := range IDs {
+		if uuid == one_ID {
+			exist_ID = true
+		}
+	}
 
-	_, err := users.UpdateOne(context.TODO(), filter, update)
-	if err != nil {
+	if exist_ID {
+		filter := bson.D{{"uuiduser", uuid}}
+		update := bson.M{"$set": bson.M{"avatar_image": new_data.Avatar_image,
+			"avatar_type": new_data.Avatar_type, "name": new_data.Name,
+			"surname": new_data.Surname, "datastart": new_data.Datastart, "login": new_data.Login,
+			"pass": new_data.Pass}}
+
+		_, err := users.UpdateOne(context.TODO(), filter, update)
+		if err != nil {
+			log_err = LogErr{Status: "error", Message: "User cannot be found"}
+			return log_err
+		}
+
+		return log_err
+	} else {
 		log_err = LogErr{Status: "error", Message: "User cannot be found"}
 		return log_err
 	}
-
-	return log_err
 }
 
 func DeleteUserInfo(uuid string) LogErr {
@@ -108,4 +121,49 @@ func DeleteUserInfo(uuid string) LogErr {
 	}
 
 	return log_err
+}
+
+func FindIDs() []string {
+	users := Client.Database("test").Collection("users")
+
+	options := options.Find()
+	filter := bson.M{}
+
+	// Here's an array in which you can store the decoded documents
+	var results []*User
+
+	// Passing nil as the filter matches all documents in the collection
+	cur, err := users.Find(context.TODO(), filter, options)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Finding multiple documents returns a cursor
+	// Iterating through the cursor allows us to decode documents one at a time
+	for cur.Next(context.TODO()) {
+
+		// create a value into which the single document can be decoded
+		var elem User
+		err := cur.Decode(&elem)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		results = append(results, &elem)
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	// Close the cursor once finished
+	cur.Close(context.TODO())
+
+	IDs := []string{}
+
+	for _, one_ID := range results {
+		IDs = append(IDs, one_ID.Uuiduser)
+	}
+
+	return IDs
 }
