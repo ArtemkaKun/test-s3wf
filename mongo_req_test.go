@@ -72,3 +72,59 @@ func TestGetUserInfo(t *testing.T) {
 		}
 	}
 }
+
+func TestAddNewUser(t *testing.T) {
+	new_users := []User{
+		{Uuiduser: "4",
+			Avatar_image: "image.png",
+			Avatar_type:  "image",
+			Name:         "Artem",
+			Surname:      "Yurchenko",
+			Datastart:    "today",
+			Login:        "yammil",
+			Pass:         "passWord"},
+		{Uuiduser: "5",
+			Avatar_image: "image.png",
+			Avatar_type:  "image",
+			Name:         "Artem",
+			Surname:      "NotYurchenko",
+			Datastart:    "today",
+			Login:        "notyammil",
+			Pass:         "notpassWord"},
+	}
+	testpairs := []UserInfoTestpair{
+		{Test_uuid: "4", Test_user: User{
+			Uuiduser:     "4",
+			Avatar_image: "image.png",
+			Avatar_type:  "image",
+			Name:         "Artem",
+			Surname:      "Yurchenko",
+			Datastart:    "today",
+			Login:        "yammil",
+			Pass:         "passWord"},
+			Err_status: ""},
+		{Test_uuid: "5", Test_user: User{
+			Uuiduser:     "5",
+			Avatar_image: "image.png",
+			Avatar_type:  "image",
+			Name:         "Artem",
+			Surname:      "NotYurchenko",
+			Datastart:    "today",
+			Login:        "notyammil",
+			Pass:         "notpassWord"},
+			Err_status: ""},
+	}
+
+	for _, one_user := range new_users {
+		AddNewUser(one_user)
+	}
+
+	for _, pair := range testpairs {
+		err, user := GetUserInfo(pair.Test_uuid)
+
+		if err.Status != pair.Err_status || user != pair.Test_user {
+			t.Error("Expect: ", pair.Err_status, pair.Test_user,
+				"Got: ", err.Status, user)
+		}
+	}
+}
