@@ -65,3 +65,11 @@ func DeleteUser(writer http.ResponseWriter, req *http.Request) {
 		json.NewEncoder(writer).Encode(err)
 	}
 }
+
+//ORDER POST request
+func AddOrder(writer http.ResponseWriter, req *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	var new_order Order
+	json.NewDecoder(req.Body).Decode(&new_order)
+	AddNewOrder(new_order)
+}

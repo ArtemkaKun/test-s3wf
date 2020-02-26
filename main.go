@@ -13,6 +13,7 @@ func main() {
 	router.HandleFunc("/ping", Ping).Methods("POST")
 	router.HandleFunc("/auth/{login}/{pass}", Auth).Methods("POST")
 	router.HandleFunc("/user", AddUser).Methods("POST")
+	router.HandleFunc("/order", AddOrder).Methods("POST")
 	router.HandleFunc("/user/{uuid}", DeleteUser).Methods("DELETE")
 	router.HandleFunc("/user/{uuid}", UpdateUser).Methods("PUT")
 	router.HandleFunc("/user/{uuid}", GetUser).Methods("GET")
