@@ -17,5 +17,6 @@ func main() {
 	router.HandleFunc("/user/{uuid}", DeleteUser).Methods("DELETE")
 	router.HandleFunc("/user/{uuid}", UpdateUser).Methods("PUT")
 	router.HandleFunc("/user/{uuid}", GetUser).Methods("GET")
+	router.HandleFunc("/order/{orderid}", GetOrder).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8000", router)) //run server on 8000 port
 }

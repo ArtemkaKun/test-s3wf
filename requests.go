@@ -73,3 +73,15 @@ func AddOrder(writer http.ResponseWriter, req *http.Request) {
 	json.NewDecoder(req.Body).Decode(&new_order)
 	AddNewOrder(new_order)
 }
+
+//ORDER GET request
+func GetOrder(writer http.ResponseWriter, req *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(req)
+	err, order := GetOrderInfo(params["orderid"])
+	if err.Status != "" {
+		json.NewEncoder(writer).Encode(err)
+	} else {
+		json.NewEncoder(writer).Encode(order)
+	}
+}
