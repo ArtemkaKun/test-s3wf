@@ -34,7 +34,7 @@ func GetOrderInfo(order_id string) (LogErr, Order) {
 	var log_err LogErr
 	var order_info Order
 
-	err := Connect.QueryRow(context.Background(), "SELECT uuiduser, productname, product_id, price, payment, discount_coupon, shipping_delivery, record_date, record_time FROM public.orders WHERE idorder=$1", order_id).Scan(&order_info.Uuiduser,
+	err := Connect.QueryRow(context.Background(), "SELECT uuiduser, product_name, product_id, price, payment, discount, shipping, record_date, record_time FROM orders WHERE idorder=$1", order_id).Scan(&order_info.Uuiduser,
 		&order_info.Product_name, &order_info.Product_id, &order_info.Price, &order_info.Payment,
 		&order_info.Discount, &order_info.Shipping_delivery, &order_info.Record_date, &order_info.Record_time)
 	if err != nil {

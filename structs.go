@@ -1,7 +1,5 @@
 package main
 
-import "time"
-
 type User struct {
 	Uuiduser     string `json:"id"`
 	Avatar_image string `json:"avatar_img"`
@@ -31,19 +29,13 @@ type Order struct {
 	Idorder           int     `json:"idorder"`
 	Uuiduser          int     `json:"uuiduser"`
 	Product_name      string  `json:"product_name"`
-	Product_id        int     `json:"product_id"`
+	Product_id        string  `json:"product_id"`
 	Price             float32 `json:"price"`
 	Payment           string  `json:"payment"`
 	Discount          string  `json:"discount"`
 	Shipping_delivery string  `json:"shipping_delivery"`
 	Record_date       string  `json:"record_date"`
 	Record_time       string  `json:"record_time"`
-}
-
-type Date struct {
-	Day   int
-	Month time.Month
-	Year  int
 }
 
 type LoginTestpair struct {
@@ -57,4 +49,10 @@ type UserInfoTestpair struct {
 	Test_uuid  string
 	Test_user  User
 	Err_status string
+}
+
+type OrderInfoTestpair struct {
+	Test_orderid string
+	Test_order   Order
+	Err_status   string
 }
